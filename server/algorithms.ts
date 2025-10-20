@@ -92,6 +92,100 @@ export class PriorityQueue {
     }
   }
 }
+/*
+  ALGORITHM 7: CONFLICT DETECTION
+  Finds overlapping task schedules using pairwise comparison - O(n²)
+ */
+export function detectConflicts(tasks: Task[]): {
+  hasConflict: boolean;
+  conflictingTasks: Task[];
+  recommendations: string[];
+} {
+  const pendingTasks = tasks.filter((t) => t.status === "pending");
+  const conflicts: Task[] = [];
+  const recommendations: string[] = [];
+
+  for (let i = 0; i < pendingTasks.length; i++) {
+    for (let j = i + 1; j < pendingTasks.length; j++) {
+      const task1 = pendingTasks[i];
+      const task2 = pendingTasks[j];
+
+      const start1 =
+        new Date(task1.deadline).getTime() - task1.estimatedDuration * 60000;
+      const end1 = new Date(task1.deadline).getTime();
+      const start2 =
+        new Date(task2.deadline).getTime() - task2.estimatedDuration * 60000;
+      const end2 = new Date(task2.deadline).getTime();
+
+      if (
+        (start1 < end2 && end1 > start2) ||
+        (start2 < end1 && end2 > start1)
+      ) {
+        if (!conflicts.find((t) => t.id === task1.id)) conflicts.push(task1);
+        if (!conflicts.find((t) => t.id === task2.id)) conflicts.push(task2);
+
+        if (
+          PRIORITY_VALUES[task1.priority as keyof typeof PRIORITY_VALUES] >
+          PRIORITY_VALUES[task2.priority as keyof typeof PRIORITY_VALUES]
+        ) {
+          recommendations.push(
+            `Consider rescheduling "${task2.name}" (${task2.priority} priority) as it conflicts with higher priority task "${task1.name}"`
+          );
+        } else {
+          recommendations.push(
+            `Consider rescheduling "${task1.name}" (${task1.priority} priority) as it conflicts with higher priority task "${task2.name}"`
+          );
+        }
+      }
+    }
+  }
+
+  return {
+    hasConflict: conflicts.length > 0,
+    conflictingTasks: conflicts,
+    recommendations,
+  };
+}
+/*
+  ALGORITHM 8: RESCHEDULING
+  Finds next available time slot avoiding conflicts - O(n log n)
+ */
+export function rescheduleTask(task: Task, allTasks: Task[]): Date {
+  const taskDuration = task.estimatedDuration * 60000;
+  let proposedTime = new Date(task.deadline).getTime();
+
+  const sortedTasks = [...allTasks]
+    .filter((t) => t.id !== task.id && t.status === "pending")
+    .sort(
+      (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
+    );
+
+  for (const existingTask of sortedTasks) {
+    const existingStart =
+      new Date(existingTask.deadline).getTime() -
+      existingTask.estimatedDuration * 60000;
+    const existingEnd = new Date(existingTask.deadline).getTime();
+
+    if (
+      proposedTime < existingEnd &&
+      proposedTime + taskDuration > existingStart
+    ) {
+      proposedTime = existingEnd + 60000;
+    }
+  }
+
+  return new Date(proposedTime + taskDuration);
+}
+
+/*
+  ALGORITHM 9: HEAPSORT (DEADLINE SORTING)
+  Sorts tasks by deadline using comparison sort - O(n log n)
+ */
+export function sortByDeadline(tasks: Task[]): Task[] {
+  return [...tasks].sort((a, b) => {
+    return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+  });
+}
 
 /*
   ALGORITHM 10: ANALYTICS CALCULATION
