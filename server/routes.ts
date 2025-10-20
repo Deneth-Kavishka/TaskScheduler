@@ -93,3 +93,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   return httpServer;
 }
+
+/**
+   * GET /api/conflicts
+   **/ 
+app.get("/api/conflicts", async (req, res) => {
+    try {
+      const tasks = await storage.getAllTasks();
+      const conflicts = detectConflicts(tasks);
+      res.json(conflicts);
+    } catch (error) {
+      console.error("Error detecting conflicts:", error);
+      res.status(500).json({ error: "Failed to detect conflicts" });
+    }
+  });
+
+
+  /**
+   *  POST /api/tasks/:id/reschedule
+   **/ 
+   app.post("/api/tasks/:id/reschedule", async (req, res) => {
+    try {
+      const task = await storage.getTask(req.params.id);
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+
+      const allTasks = await storage.getAllTasks();
+      const newDeadline = rescheduleTask(task, allTasks);
+
+      // Update the task with new deadline
+      const updatedTask = await storage.updateTask(req.params.id, {
+        deadline: newDeadline,
+      });
+
+      res.json({
+        task: updatedTask,
+        newDeadline,
+        message: "Task successfully rescheduled to avoid conflicts",
+      });
+    } catch (error) {
+      console.error("Error rescheduling task:", error);
+      res.status(500).json({ error: "Failed to reschedule task" });
+    }
+  });
+
+
+   /**
+   *   GET /api/tasks/sorted/deadline
+   **/ 
+  app.get("/api/tasks/sorted/deadline", async (req, res) => {
+    try {
+      const tasks = await storage.getAllTasks();
+      const sortedTasks = sortByDeadline(tasks);
+
+      res.json(sortedTasks);
+    } catch (error) {
+      console.error("Error sorting tasks:", error);
+      res.status(500).json({ error: "Failed to sort tasks" });
+    }
+  });
