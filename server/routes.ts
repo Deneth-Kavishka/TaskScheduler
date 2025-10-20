@@ -153,3 +153,33 @@ app.get("/api/conflicts", async (req, res) => {
       res.status(500).json({ error: "Failed to sort tasks" });
     }
   });
+
+  app.delete("/api/tasks/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteTask(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      res.status(500).json({ error: "Failed to delete task" });
+    }
+  });
+
+  app.put("/api/tasks/:id", async (req, res) => {
+    try {
+      const { id, ...data } = req.body;
+      const validatedData = insertTaskSchema.partial().parse(data);
+      const task = await storage.updateTask(req.params.id, validatedData);
+
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+
+      res.json(task);
+    } catch (error) {
+      console.error("Error updating task:", error);
+      res.status(400).json({ error: "Invalid task data" });
+    }
+  });
