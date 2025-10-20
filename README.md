@@ -713,27 +713,27 @@ TaskFlowPro/
 
 ### Dashboard
 
-![Dashboard Overview](docs/screenshots/dashboard.png)
+![Dashboard Overview](Attachments/Dashboard.JPG)
 _Overview showing key metrics, upcoming tasks, and smart recommendations_
 
 ### Task Board
 
-![Task Management](docs/screenshots/tasks.png)
+![Task Management](Attachments/Task.JPG)
 _Complete task list with priority badges, deadline tracking, and quick actions_
 
 ### Heap Visualization
 
-![Priority Queue Visualization](docs/screenshots/heap.png)
+![Priority Queue Visualization](Attachments/Queue.JPG)
 _Interactive binary tree showing max heap structure and parent-child relationships_
 
 ### Analytics
 
-![Analytics Dashboard](docs/screenshots/analytics.png)
+![Analytics Dashboard](Attachments/Analytics.JPG)
 _Comprehensive charts showing completion trends, task distribution, and productivity metrics_
 
 ### Calendar View
 
-![Calendar Timeline](docs/screenshots/calendar.png)
+![Calendar Timeline](Attachments/Calendar.JPG)
 _Weekly/monthly view with deadline visualization and conflict highlighting_
 
 ---
