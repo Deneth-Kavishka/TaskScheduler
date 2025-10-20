@@ -90,8 +90,49 @@ export class PriorityQueue {
       ];
       index = parent;
     }
+  }/*
+    ALGORITHM 5: EXTRACT MAX (DEQUEUE)
+    Removes and returns highest priority task - O(log n)
+   */
+  extractMax(): Task | undefined {
+    if (this.heap.length === 0) return undefined;
+    if (this.heap.length === 1) return this.heap.pop();
+
+    const max = this.heap[0];
+    this.heap[0] = this.heap.pop()!;
+    this.heapifyDown(0);
+    return max;
+  }
+   /*
+    ALGORITHM 6: UPDATE PRIORITY
+    Changes task priority and rebalances heap - O(log n)
+   */
+  updatePriority(taskId: string, newPriority: "high" | "medium" | "low"): void {
+    const index = this.heap.findIndex((t) => t.id === taskId);
+    if (index === -1) return;
+
+    const oldPriority = this.getTaskPriority(this.heap[index]);
+    this.heap[index].priority = newPriority;
+    const newPriorityValue = this.getTaskPriority(this.heap[index]);
+
+    if (newPriorityValue > oldPriority) {
+      this.heapifyUp(index);
+    } else {
+      this.heapifyDown(index);
+    }
+  }
+
+  getTasks(): Task[] {
+    return [...this.heap];
+  }
+
+  size(): number {
+    return this.heap.length;
   }
 }
+
+
+
 /*
   ALGORITHM 7: CONFLICT DETECTION
   Finds overlapping task schedules using pairwise comparison - O(n²)
