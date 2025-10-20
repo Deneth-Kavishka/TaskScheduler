@@ -22,30 +22,36 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  /*
-    ALGORITHM 7: GET ALL TASKS - O(n)
-    Retrieves all tasks from database, ordered by creation date.
-    Used by: Build Max Heap, Conflict Detection, Analytics, Recommendations
-   */
+/*
+  GET ALL TASKS - O(n)
+  Retrieves all tasks from database, ordered by creation date.
+  Used by: 
+  - ALGORITHMS 1-3: Build Max Heap, Heapify Down, Heapify Up
+  - ALGORITHM 7: Conflict Detection
+  - ALGORITHM 8: Rescheduling
+  - ALGORITHM 9: HeapSort
+  - ALGORITHM 10: Analytics Calculation
+  - ALGORITHM 11: Recommendation Engine
+ */
   async getAllTasks(): Promise<Task[]> {
     return await db.select().from(tasks).orderBy(desc(tasks.createdAt));
   }
 
-  /*
-    ALGORITHM 8: GET SINGLE TASK - O(1)
-    Fetches one task by ID using B-tree index.
-    Used by: Routes for single task display/update
-   */
+/*
+  GET SINGLE TASK - O(1)
+  Fetches one task by ID using B-tree index.
+  Used by: Routes for single task display/update (No direct algorithm use)
+ */
   async getTask(id: string): Promise<Task | undefined> {
     const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
     return task || undefined;
   }
 
-  /*
-    ALGORITHM 9: CREATE TASK - O(1)
-    Inserts new task into database.
-    Used by: INSERT algorithm (enqueue to priority queue)
-   */
+/*
+  CREATE TASK - O(1)
+  Inserts new task into database.
+  Used by: ALGORITHM 4: INSERT (enqueue to priority queue)
+ */
   async createTask(insertTask: InsertTask): Promise<Task> {
     const deadlineDate =
       typeof insertTask.deadline === "string"
@@ -63,11 +69,13 @@ export class DatabaseStorage implements IStorage {
     return task;
   }
 
-  /*
-    ALGORITHM 10: UPDATE TASK - O(1)
-    Modifies task properties using ID lookup.
-    Used by: UPDATE PRIORITY algorithm (heap rebalancing)
-   */
+/*
+  UPDATE TASK - O(1)
+  Modifies task properties using ID lookup.
+  Used by: 
+  - ALGORITHM 6: UPDATE PRIORITY (heap rebalancing)
+  - ALGORITHM 8: Rescheduling (updates deadline after finding free slot)
+ */
   async updateTask(
     id: string,
     updateData: Partial<InsertTask>
@@ -89,22 +97,22 @@ export class DatabaseStorage implements IStorage {
     return task || undefined;
   }
 
-  /*
-    ALGORITHM 11: DELETE TASK - O(1)
-    Removes task from database by ID.
-    Used by: EXTRACT MAX algorithm (dequeue from priority queue)
-   */
+/*
+  DELETE TASK - O(1)
+  Removes task from database by ID.
+  Used by: ALGORITHM 5: EXTRACT MAX (dequeue from priority queue)
+ */
   async deleteTask(id: string): Promise<boolean> {
     const result = await db.delete(tasks).where(eq(tasks.id, id)).returning();
     return result.length > 0;
   }
 
-  /*
-    ALGORITHM 12: COMPLETE TASK - O(1)
-    Marks task as completed and saves to history.
-    Updates status, tracks completion time, and records metrics.
-    Used by: Analytics algorithm (for completion trend calculation)
-   */
+/*
+  COMPLETE TASK - O(1)
+  Marks task as completed and saves to history.
+  Updates status, tracks completion time, and records metrics.
+  Used by: ALGORITHM 10: Analytics (provides completion data for trends)
+ */
   async completeTask(id: string): Promise<Task | undefined> {
     const task = await this.getTask(id);
     if (!task) return undefined;
@@ -132,11 +140,13 @@ export class DatabaseStorage implements IStorage {
     return updatedTask || undefined;
   }
 
-  /*
-    ALGORITHM 13: GET COMPLETION HISTORY - O(n)
-    Retrieves all completion records for analytics.
-    Used by: Analytics algorithm (7-day trend, completion metrics)
-   */
+/*
+  GET COMPLETION HISTORY - O(n)
+  Retrieves all completion records for analytics.
+  Used by: 
+  - ALGORITHM 10: Analytics (7-day trend, completion rate, avg duration)
+  - ALGORITHM 11: Recommendations (work pattern analysis, break detection)
+ */
   async getCompletionHistory(): Promise<CompletionHistory[]> {
     return await db
       .select()
@@ -144,11 +154,11 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(completionHistory.completedAt));
   }
 
-  /*
-    ALGORITHM 14: ADD COMPLETION HISTORY - O(1)
-    Saves task completion record for analytics tracking.
-    Used by: completeTask() to maintain historical data
-   */
+/*
+  ADD COMPLETION HISTORY - O(1)
+  Saves task completion record for analytics tracking.
+  Used by: completeTask() internally (not directly by algorithms)
+ */
   async addCompletionHistory(
     history: Omit<CompletionHistory, "id">
   ): Promise<CompletionHistory> {

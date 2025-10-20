@@ -43,17 +43,17 @@ export class PriorityQueue {
   private heapifyDown(index: number): void {
     const length = this.heap.length;
     let largest = index;
-    const left = 2 * index + 1;
-    const right = 2 * index + 2;
-
+    const left = 2 * index + 1; // left child index
+    const right = 2 * index + 2; // right child index
+    // Compare with left child
     if (
       left < length &&
-      this.getTaskPriority(this.heap[left]) >
+      this.getTaskPriority(this.heap[left]) > 
         this.getTaskPriority(this.heap[largest])
     ) {
       largest = left;
     }
-
+    // Compare with right child
     if (
       right < length &&
       this.getTaskPriority(this.heap[right]) >
@@ -61,7 +61,7 @@ export class PriorityQueue {
     ) {
       largest = right;
     }
-
+    // Swap and continue heapifying down if needed
     if (largest !== index) {
       [this.heap[index], this.heap[largest]] = [
         this.heap[largest],
@@ -76,10 +76,10 @@ export class PriorityQueue {
     Restores max heap property by moving element up - O(log n)
    */
   private heapifyUp(index: number): void {
-    while (index > 0) {
+    while (index > 0) { // while not at root
       const parent = Math.floor((index - 1) / 2);
       if (
-        this.getTaskPriority(this.heap[index]) <=
+        this.getTaskPriority(this.heap[index]) <= 
         this.getTaskPriority(this.heap[parent])
       ) {
         break;
