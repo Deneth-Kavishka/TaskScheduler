@@ -733,7 +733,7 @@ _Comprehensive charts showing completion trends, task distribution, and producti
 
 ### Calendar View
 
-![Calendar Timeline](Attachments/Calendar.JPG)
+![Calendar Timeline](Attachments/Calander.JPG)
 _Weekly/monthly view with deadline visualization and conflict highlighting_
 
 ---
