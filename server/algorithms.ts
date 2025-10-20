@@ -308,7 +308,95 @@ export function calculateAnalytics(
     productivityScore,
     tasksByPriority,
     completionTrend,
+
   };
 }
+
+ /*
+    ALGORITHM 4: INSERT (ENQUEUE)
+    Adds new task to heap and maintains priority - O(log n)
+   */
+  insert(task: Task): void {
+    this.heap.push(task);
+    this.heapifyUp(this.heap.length - 1);
+  }
+
+
+/*
+  ALGORITHM 11: RECOMMENDATION ENGINE
+ */
+export function generateRecommendations(
+  tasks: Task[],
+  completionHistory: Array<{ completedAt: Date }>
+): Array<{
+  type: "break" | "workload" | "reschedule" | "deadline";
+  message: string;
+  severity: "info" | "warning" | "critical";
+  relatedTasks?: string[];
+}> {
+  const recommendations: Array<{
+    type: "break" | "workload" | "reschedule" | "deadline";
+    message: string;
+    severity: "info" | "warning" | "critical";
+    relatedTasks?: string[];
+  }> = [];
+
+  const recentCompletions = completionHistory.filter((h) => {
+    const hoursSince =
+      (Date.now() - new Date(h.completedAt).getTime()) / 3600000;
+    return hoursSince <= 2;
+  });
+
+  const totalMinutesWorked = recentCompletions.length * 30;
+
+  if (totalMinutesWorked >= 90) {
+    recommendations.push({
+      type: "break",
+      message: `You've been working for ${Math.round(
+        totalMinutesWorked
+      )} minutes. Consider taking a 10-15 minute break to maintain productivity.`,
+      severity: "info",
+    });
+  }
+
+  const pendingTasks = tasks.filter((t) => t.status === "pending");
+  const highPriorityTasks = pendingTasks.filter((t) => t.priority === "high");
+
+  if (highPriorityTasks.length >= 5) {
+    recommendations.push({
+      type: "workload",
+      message: `You have ${highPriorityTasks.length} high-priority tasks. Consider rescheduling some medium or low-priority tasks to focus on critical work.`,
+      severity: "warning",
+      relatedTasks: highPriorityTasks.slice(0, 3).map((t) => t.id),
+    });
+  }
+
+  const upcomingDeadlines = pendingTasks.filter((t) => {
+    const hoursUntil = (new Date(t.deadline).getTime() - Date.now()) / 3600000;
+    return hoursUntil <= 24 && hoursUntil > 0;
+  });
+
+  if (upcomingDeadlines.length > 0) {
+    recommendations.push({
+      type: "deadline",
+      message: `You have ${upcomingDeadlines.length} task(s) due within 24 hours. Make sure to prioritize these tasks.`,
+      severity: upcomingDeadlines.length > 3 ? "critical" : "warning",
+      relatedTasks: upcomingDeadlines.map((t) => t.id),
+    });
+  }
+
+  const conflicts = detectConflicts(tasks);
+  if (conflicts.hasConflict) {
+    recommendations.push({
+      type: "reschedule",
+      message: `You have ${conflicts.conflictingTasks.length} tasks with scheduling conflicts. Review and reschedule to optimize your time.`,
+      severity: "warning",
+      relatedTasks: conflicts.conflictingTasks.slice(0, 3).map((t) => t.id),
+    });
+  }
+
+  return recommendations;
+}
+
 
 
