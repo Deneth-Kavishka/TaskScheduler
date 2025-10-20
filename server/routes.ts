@@ -183,3 +183,37 @@ app.get("/api/conflicts", async (req, res) => {
       res.status(400).json({ error: "Invalid task data" });
     }
   });
+
+    /**
+   * POST /api/tasks
+   * ALGORITHM 4: INSERT (Enqueue) - O(log n)
+   
+   */
+  app.post("/api/tasks", async (req, res) => {
+    try {
+      const validatedData = insertTaskSchema.parse(req.body);
+      const task = await storage.createTask(validatedData);
+      res.status(201).json(task);
+    } catch (error) {
+      console.error("Error creating task:", error);
+      res.status(400).json({ error: "Invalid task data" });
+    }
+  });
+
+  /**
+   * GET /api/recommendations
+   * ALGORITHM 11:
+   
+   */
+  app.get("/api/recommendations", async (req, res) => {
+    try {
+      const tasks = await storage.getAllTasks();
+      const history = await storage.getCompletionHistory();
+
+      const recommendations = generateRecommendations(tasks, history);
+      res.json(recommendations);
+    } catch (error) {
+      console.error("Error generating recommendations:", error);
+      res.status(500).json({ error: "Failed to generate recommendations" });
+    }
+  });
