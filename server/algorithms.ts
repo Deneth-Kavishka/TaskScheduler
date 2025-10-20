@@ -90,8 +90,19 @@ export class PriorityQueue {
       ];
       index = parent;
     }
-  }/*
-    ALGORITHM 5: EXTRACT MAX (DEQUEUE)
+  }
+
+  /*
+    ALGORITHM 4: INSERT (ENQUEUE)
+    Adds new task to heap and maintains priority - O(log n)
+   */
+  insert(task: Task): void {
+    this.heap.push(task);
+    this.heapifyUp(this.heap.length - 1);
+  }
+
+  /*
+    ALGORITHM 6: EXTRACT MAX (DEQUEUE)
     Removes and returns highest priority task - O(log n)
    */
   extractMax(): Task | undefined {
@@ -103,8 +114,9 @@ export class PriorityQueue {
     this.heapifyDown(0);
     return max;
   }
-   /*
-    ALGORITHM 6: UPDATE PRIORITY
+
+  /*
+    ALGORITHM 5: UPDATE PRIORITY
     Changes task priority and rebalances heap - O(log n)
    */
   updatePriority(taskId: string, newPriority: "high" | "medium" | "low"): void {
@@ -130,8 +142,6 @@ export class PriorityQueue {
     return this.heap.length;
   }
 }
-
-
 
 /*
   ALGORITHM 7: CONFLICT DETECTION
@@ -187,6 +197,7 @@ export function detectConflicts(tasks: Task[]): {
     recommendations,
   };
 }
+
 /*
   ALGORITHM 8: RESCHEDULING
   Finds next available time slot avoiding conflicts - O(n log n)
@@ -308,22 +319,12 @@ export function calculateAnalytics(
     productivityScore,
     tasksByPriority,
     completionTrend,
-
   };
 }
 
- /*
-    ALGORITHM 4: INSERT (ENQUEUE)
-    Adds new task to heap and maintains priority - O(log n)
-   */
-  insert(task: Task): void {
-    this.heap.push(task);
-    this.heapifyUp(this.heap.length - 1);
-  }
-
-
 /*
   ALGORITHM 11: RECOMMENDATION ENGINE
+  Generates intelligent task suggestions using heuristic analysis - O(n)
  */
 export function generateRecommendations(
   tasks: Task[],
@@ -397,6 +398,3 @@ export function generateRecommendations(
 
   return recommendations;
 }
-
-
-

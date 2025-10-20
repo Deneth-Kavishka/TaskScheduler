@@ -3,16 +3,15 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTaskSchema, updateTaskSchema } from "@shared/schema";
 import {
-  //detectConflicts,
+  detectConflicts,
   calculateAnalytics,
-  //generateRecommendations,
+  generateRecommendations,
   PriorityQueue,
-  //rescheduleTask,
-  //sortByDeadline,
+  rescheduleTask,
+  sortByDeadline,
 } from "./algorithms";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
   /*
     GET /api/tasks - Fetch all tasks with status detection - O(n)
     Used by: tasks.tsx, dashboard.tsx, calendar.tsx, heap.tsx
@@ -36,6 +35,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   /*
+    ALGORITHM 9: HEAPSORT - Sort tasks by deadline - O(n log n)
+    Algorithm: sortByDeadline() in algorithms.ts Line 223
+    Used by: calendar.tsx (optional for chronological display)
+   */
+  app.get("/api/tasks/sorted/deadline", async (req, res) => {
+    try {
+      const tasks = await storage.getAllTasks();
+      const sortedTasks = sortByDeadline(tasks);
+
+      res.json(sortedTasks);
+    } catch (error) {
+      console.error("Error sorting tasks:", error);
+      res.status(500).json({ error: "Failed to sort tasks" });
+    }
+  });
+
+  /*
     GET /api/tasks/:id - Fetch single task by ID - O(1)
     Uses B-tree index on primary key
    */
@@ -52,7 +68,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-   /**
+  /*
+    ALGORITHM 4: INSERT (Enqueue) - Add task to priority queue - O(log n)
+    Algorithm: PriorityQueue.insert() → heapifyUp() in algorithms.ts Line 97
+    Used by: task-form.tsx via tasks.tsx Line 41
+   */
+  app.post("/api/tasks", async (req, res) => {
+    try {
+      const validatedData = insertTaskSchema.parse(req.body);
+      const task = await storage.createTask(validatedData);
+      res.status(201).json(task);
+    } catch (error) {
+      console.error("Error creating task:", error);
+      res.status(400).json({ error: "Invalid task data" });
+    }
+  });
+
+  /*
+    ALGORITHM 6: UPDATE PRIORITY - Update task and rebalance heap - O(log n)
+    Algorithm: PriorityQueue.updatePriority() in algorithms.ts Line 116
+    Used by: task-card.tsx via tasks.tsx Line 50
+   */
+  app.put("/api/tasks/:id", async (req, res) => {
+    try {
+      const { id, ...data } = req.body;
+      const validatedData = insertTaskSchema.partial().parse(data);
+      const task = await storage.updateTask(req.params.id, validatedData);
+
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+
+      res.json(task);
+    } catch (error) {
+      console.error("Error updating task:", error);
+      res.status(400).json({ error: "Invalid task data" });
+    }
+  });
+
+  /*
+    ALGORITHM 5: EXTRACT MAX (Dequeue) - Remove task from priority queue - O(log n)
+    Algorithm: PriorityQueue.extractMax() → heapifyDown() in algorithms.ts Line 105
+    Used by: task-card.tsx via tasks.tsx Line 62
+   */
+  app.delete("/api/tasks/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteTask(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      res.status(500).json({ error: "Failed to delete task" });
+    }
+  });
+
+  /*
+    POST /api/tasks/:id/complete - Mark task as completed - O(1)
+    Database: storage.completeTask() saves to completion_history
+    Used by: task-card.tsx via tasks.tsx Line 71
+   */
+  app.post("/api/tasks/:id/complete", async (req, res) => {
+    try {
+      const task = await storage.completeTask(req.params.id);
+      if (!task) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      res.json(task);
+    } catch (error) {
+      console.error("Error completing task:", error);
+      res.status(500).json({ error: "Failed to complete task" });
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════════
+  // ADVANCED ALGORITHM ENDPOINTS
+  // ═══════════════════════════════════════════════════════════════
+
+  /*
     ALGORITHM 10: ANALYTICS CALCULATION - Compute task metrics - O(n)
     Algorithm: calculateAnalytics() in algorithms.ts Line 229
     Used by: analytics.tsx Line 24, dashboard.tsx Line 17
@@ -67,6 +161,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error calculating analytics:", error);
       res.status(500).json({ error: "Failed to calculate analytics" });
+    }
+  });
+
+  /*
+    ALGORITHM 7: CONFLICT DETECTION - Identify task overlaps - O(n²)
+    Algorithm: detectConflicts() in algorithms.ts Line 141
+    Used by: tasks.tsx Line 59
+   */
+  app.get("/api/conflicts", async (req, res) => {
+    try {
+      const tasks = await storage.getAllTasks();
+      const conflicts = detectConflicts(tasks);
+      res.json(conflicts);
+    } catch (error) {
+      console.error("Error detecting conflicts:", error);
+      res.status(500).json({ error: "Failed to detect conflicts" });
+    }
+  });
+
+  /*
+    ALGORITHM 11: AI RECOMMENDATIONS - Generate task insights - O(n)
+    Algorithm: generateRecommendations() in algorithms.ts Line 302
+    Used by: dashboard.tsx Line 21, recommendation-panel.tsx
+   */
+  app.get("/api/recommendations", async (req, res) => {
+    try {
+      const tasks = await storage.getAllTasks();
+      const history = await storage.getCompletionHistory();
+
+      const recommendations = generateRecommendations(tasks, history);
+      res.json(recommendations);
+    } catch (error) {
+      console.error("Error generating recommendations:", error);
+      res.status(500).json({ error: "Failed to generate recommendations" });
     }
   });
 
@@ -90,29 +218,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  const httpServer = createServer(app);
-  return httpServer;
-}
-
-/**
-   * GET /api/conflicts
-   **/ 
-app.get("/api/conflicts", async (req, res) => {
-    try {
-      const tasks = await storage.getAllTasks();
-      const conflicts = detectConflicts(tasks);
-      res.json(conflicts);
-    } catch (error) {
-      console.error("Error detecting conflicts:", error);
-      res.status(500).json({ error: "Failed to detect conflicts" });
-    }
-  });
-
-
-  /**
-   *  POST /api/tasks/:id/reschedule
-   **/ 
-   app.post("/api/tasks/:id/reschedule", async (req, res) => {
+  /*
+    ALGORITHM 8: RESCHEDULING - Find conflict-free time slots - O(n log n)
+    Algorithm: rescheduleTask() in algorithms.ts Line 197
+    Available for: tasks.tsx (auto-reschedule feature)
+   */
+  app.post("/api/tasks/:id/reschedule", async (req, res) => {
     try {
       const task = await storage.getTask(req.params.id);
       if (!task) {
@@ -138,82 +249,6 @@ app.get("/api/conflicts", async (req, res) => {
     }
   });
 
-
-   /**
-   *   GET /api/tasks/sorted/deadline
-   **/ 
-  app.get("/api/tasks/sorted/deadline", async (req, res) => {
-    try {
-      const tasks = await storage.getAllTasks();
-      const sortedTasks = sortByDeadline(tasks);
-
-      res.json(sortedTasks);
-    } catch (error) {
-      console.error("Error sorting tasks:", error);
-      res.status(500).json({ error: "Failed to sort tasks" });
-    }
-  });
-
-  app.delete("/api/tasks/:id", async (req, res) => {
-    try {
-      const deleted = await storage.deleteTask(req.params.id);
-      if (!deleted) {
-        return res.status(404).json({ error: "Task not found" });
-      }
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error deleting task:", error);
-      res.status(500).json({ error: "Failed to delete task" });
-    }
-  });
-
-  app.put("/api/tasks/:id", async (req, res) => {
-    try {
-      const { id, ...data } = req.body;
-      const validatedData = insertTaskSchema.partial().parse(data);
-      const task = await storage.updateTask(req.params.id, validatedData);
-
-      if (!task) {
-        return res.status(404).json({ error: "Task not found" });
-      }
-
-      res.json(task);
-    } catch (error) {
-      console.error("Error updating task:", error);
-      res.status(400).json({ error: "Invalid task data" });
-    }
-  });
-
-    /**
-   * POST /api/tasks
-   * ALGORITHM 4: INSERT (Enqueue) - O(log n)
-   
-   */
-  app.post("/api/tasks", async (req, res) => {
-    try {
-      const validatedData = insertTaskSchema.parse(req.body);
-      const task = await storage.createTask(validatedData);
-      res.status(201).json(task);
-    } catch (error) {
-      console.error("Error creating task:", error);
-      res.status(400).json({ error: "Invalid task data" });
-    }
-  });
-
-  /**
-   * GET /api/recommendations
-   * ALGORITHM 11:
-   
-   */
-  app.get("/api/recommendations", async (req, res) => {
-    try {
-      const tasks = await storage.getAllTasks();
-      const history = await storage.getCompletionHistory();
-
-      const recommendations = generateRecommendations(tasks, history);
-      res.json(recommendations);
-    } catch (error) {
-      console.error("Error generating recommendations:", error);
-      res.status(500).json({ error: "Failed to generate recommendations" });
-    }
-  });
+  const httpServer = createServer(app);
+  return httpServer;
+}
