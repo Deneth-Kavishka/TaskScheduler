@@ -33,7 +33,7 @@
 
 ## 🎯 Overview
 
-**TaskFlowPro** is an intelligent task scheduling application that leverages advanced data structures and algorithms to optimize task management. Built as a comprehensive demonstration of algorithmic problem-solving, the system uses a **Max Heap Priority Queue** as its core data structure to ensure efficient task prioritization and retrieval.
+**TaskScheduler** is an intelligent task scheduling application that leverages advanced data structures and algorithms to optimize task management. Built as a comprehensive demonstration of algorithmic problem-solving, the system uses a **Max Heap Priority Queue** as its core data structure to ensure efficient task prioritization and retrieval.
 
 ### 🎓 Academic Context
 
