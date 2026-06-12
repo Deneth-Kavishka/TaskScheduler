@@ -1,4 +1,4 @@
-# 🚀 TaskFlowPro - AI-Powered Task Scheduler
+# TaskFlowPro - AI-Powered Task Scheduler
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61dafb.svg)](https://reactjs.org/)
@@ -8,36 +8,40 @@
 
 > A sophisticated task management system demonstrating **11 core data structures and algorithms** for intelligent task scheduling, priority management, and productivity optimization.
 
-**PDSA Coursework Project** - Programming, Data Structures & Algorithms
+**Programming Data Structures & Algorithms Project**
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-- [Algorithms Implemented](#-algorithms-implemented)
-- [Tech Stack](#-tech-stack)
-- [Architecture](#-architecture)
-- [Getting Started](#-getting-started)
-- [Usage Guide](#-usage-guide)
-- [API Documentation](#-api-documentation)
-- [Database Schema](#-database-schema)
-- [Project Structure](#-project-structure)
-- [Algorithm Complexity Analysis](#-algorithm-complexity-analysis)
-- [Screenshots](#-screenshots)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Algorithms Implemented](#algorithms-implemented)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Usage Guide](#usage-guide)
+- [API Documentation](#api-documentation)
+- [Database Schema](#database-schema)
+- [Project Structure](#project-structure)
+- [Algorithm Complexity Analysis](#algorithm-complexity-analysis)
+- [Screenshots](#screenshots)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Security](#security)
+- [Contributing](#contributing)
+- [Resources](#resources)
+- [License](#license)
 
 ---
 
-## 🎯 Overview
+## Overview
 
-**TaskScheduler** is an intelligent task scheduling application that leverages advanced data structures and algorithms to optimize task management. Built as a comprehensive demonstration of algorithmic problem-solving, the system uses a **Max Heap Priority Queue** as its core data structure to ensure efficient task prioritization and retrieval.
+**TaskScheduler** is an intelligent task scheduling application that leverages advanced data structures and algorithms to optimize task management. Built as a comprehensive demonstration of algorithmic implementation in a real-world application.
 
-### 🎓 Academic Context
+### Project Context
 
-This project was developed as part of the **PDSA (Programming, Data Structures & Algorithms)** coursework, showcasing practical implementation of:
+This project was developed to showcase practical implementation of:
 
 - Priority Queue (Max Heap) data structure
 - Sorting algorithms (HeapSort)
@@ -47,9 +51,9 @@ This project was developed as part of the **PDSA (Programming, Data Structures &
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🎯 Core Functionality
+### Core Functionality
 
 - **Priority-Based Task Management** - Max heap ensures highest priority tasks are always accessible in O(log n)
 - **Intelligent Conflict Detection** - Identifies scheduling conflicts between tasks with overlapping deadlines
@@ -57,14 +61,14 @@ This project was developed as part of the **PDSA (Programming, Data Structures &
 - **Real-Time Analytics** - Calculates productivity scores, completion rates, and task distribution
 - **AI-Powered Recommendations** - Generates smart suggestions for break times, workload management, and deadline alerts
 
-### 📊 Visualization
+### Visualization
 
 - **Interactive Heap Visualization** - See the priority queue's binary tree structure in real-time
 - **Analytics Dashboard** - Comprehensive charts (Line, Pie, Bar) showing task metrics and trends
 - **Calendar View** - Weekly/monthly timeline display with deadline tracking
 - **Task Board** - Kanban-style interface with priority badges and status indicators
 
-### 🔧 Technical Highlights
+### Technical Highlights
 
 - **100% Algorithm Coverage** - All 11 algorithms connected to REST API endpoints
 - **Type-Safe** - Full TypeScript implementation with Zod validation
@@ -74,7 +78,7 @@ This project was developed as part of the **PDSA (Programming, Data Structures &
 
 ---
 
-## 🧮 Algorithms Implemented
+## Algorithms Implemented
 
 ### Data Structure: Priority Queue (Max Heap)
 
@@ -99,7 +103,7 @@ This project was developed as part of the **PDSA (Programming, Data Structures &
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -130,7 +134,7 @@ This project was developed as part of the **PDSA (Programming, Data Structures &
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### System Architecture
 
@@ -204,7 +208,7 @@ UI updates with new task
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -284,7 +288,7 @@ npm run dev:demo
 
 ---
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### Creating Tasks
 
@@ -346,7 +350,7 @@ npm run dev:demo
 
 ---
 
-## 📡 API Documentation
+## API Documentation
 
 ### Task Endpoints
 
@@ -362,7 +366,7 @@ GET /api/tasks
 [
   {
     "id": "task_abc123",
-    "name": "Complete PDSA Assignment",
+    "name": "Complete Assignment",
     "description": "Implement heap data structure",
     "deadline": "2025-10-25T23:59:00Z",
     "priority": "high",
@@ -535,7 +539,7 @@ GET /api/tasks/sorted/deadline
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### Tasks Table
 
@@ -599,7 +603,7 @@ CREATE INDEX idx_completion_history_date ON completion_history(completed_at);
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 TaskFlowPro/
@@ -627,24 +631,24 @@ TaskFlowPro/
 │   └── index.html                   # HTML template
 │
 ├── server/                          # Backend Node.js application
-│   ├── algorithms.ts                # 🧮 All 11 algorithms
+│   ├── algorithms.ts                # All 11 algorithms
 │   │   ├── PriorityQueue class
 │   │   ├── detectConflicts()
 │   │   ├── calculateAnalytics()
 │   │   ├── generateRecommendations()
 │   │   ├── rescheduleTask()
 │   │   └── sortByDeadline()
-│   ├── routes.ts                    # 📡 API endpoints (13 routes)
-│   ├── storage.ts                   # 💾 Database operations (CRUD)
-│   ├── db.ts                        # 🔌 PostgreSQL connection
-│   ├── index.ts                     # 🚀 Server entry point
+│   ├── routes.ts                    # API endpoints (13 routes)
+│   ├── storage.ts                   # Database operations (CRUD)
+│   ├── db.ts                        # PostgreSQL connection
+│   ├── index.ts                     # Server entry point
 │   └── vite.ts                      # Vite integration
 │
 ├── shared/                          # Shared between client & server
 │   └── schema.ts                    # TypeScript types & Zod schemas
 │
 ├── attached_assets/                 # Documentation assets
-│   └── PDSA_Course_Work_Proposal.pdf
+│   └── Project_Proposal.pdf
 │
 ├── documentation/                   # Project documentation
 │   ├── ALGORITHM_PATHWAY_FINAL_CHECKUP.md
@@ -655,7 +659,7 @@ TaskFlowPro/
 │
 ├── .env                             # Environment variables (git-ignored)
 ├── .gitignore                       # Git ignore rules
-├── package.json                     # Dependencies & scripts
+├���─ package.json                     # Dependencies & scripts
 ├── tsconfig.json                    # TypeScript configuration
 ├── vite.config.ts                   # Vite build configuration
 ├── tailwind.config.ts               # Tailwind CSS configuration
@@ -666,7 +670,7 @@ TaskFlowPro/
 
 ---
 
-## ⚡ Algorithm Complexity Analysis
+## Algorithm Complexity Analysis
 
 ### Time Complexity Summary
 
@@ -704,12 +708,12 @@ TaskFlowPro/
 
 **Trade-offs:**
 
-- ✅ **Pros:** Fast priority operations, simple implementation, memory efficient
-- ⚠️ **Cons:** O(n) search for arbitrary elements, not sorted (only partial ordering)
+- Pros: Fast priority operations, simple implementation, memory efficient
+- Cons: O(n) search for arbitrary elements, not sorted (only partial ordering)
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 ### Dashboard
 
@@ -738,7 +742,7 @@ _Weekly/monthly view with deadline visualization and conflict highlighting_
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Running Tests
 
@@ -757,11 +761,11 @@ npm test -- algorithms.test.ts
 
 | Module        | Coverage | Status |
 | ------------- | -------- | ------ |
-| Algorithms    | 95%      | ✅     |
-| API Routes    | 92%      | ✅     |
-| Storage Layer | 98%      | ✅     |
-| Components    | 87%      | ✅     |
-| **Overall**   | **93%**  | ✅     |
+| Algorithms    | 95%      | Verified     |
+| API Routes    | 92%      | Verified     |
+| Storage Layer | 98%      | Verified     |
+| Components    | 87%      | Verified     |
+| **Overall**   | **93%**  | Verified     |
 
 ### Manual Testing Checklist
 
@@ -778,7 +782,7 @@ npm test -- algorithms.test.ts
 
 ---
 
-## 🚢 Deployment
+## Deployment
 
 ### Local Deployment
 
@@ -820,32 +824,32 @@ npm start
 
 ---
 
-## 🔐 Security Considerations
+## Security
 
 ### Current Implementation
 
-- ✅ Input validation with Zod schemas
-- ✅ SQL injection prevention via Drizzle ORM
-- ✅ Environment variable protection
-- ✅ CORS configuration
-- ✅ Error handling and logging
+- Input validation with Zod schemas
+- SQL injection prevention via Drizzle ORM
+- Environment variable protection
+- CORS configuration
+- Error handling and logging
 
 ### Production Recommendations
 
-- 🔒 Add user authentication (JWT/OAuth)
-- 🔒 Implement rate limiting
-- 🔒 Use HTTPS/TLS encryption
-- 🔒 Add request signing
-- 🔒 Implement role-based access control (RBAC)
-- 🔒 Enable database encryption at rest
-- 🔒 Add API key authentication
-- 🔒 Implement audit logging
+- Add user authentication (JWT/OAuth)
+- Implement rate limiting
+- Use HTTPS/TLS encryption
+- Add request signing
+- Implement role-based access control (RBAC)
+- Enable database encryption at rest
+- Add API key authentication
+- Implement audit logging
 
-**Note:** This is an academic project. Production deployment requires additional security measures.
+**Note:** This is an educational project. Production deployment requires additional security measures.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these guidelines:
 
@@ -874,7 +878,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ---
 
-## 📚 Additional Resources
+## Resources
 
 ### Documentation
 
@@ -897,7 +901,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ---
 
-## 📝 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
@@ -923,7 +927,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 ---
 
-## 👥 Authors
+## Authors
 
 **Your Name** - _Initial work & Algorithm Implementation_
 
@@ -933,9 +937,9 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- **PDSA Course Instructors** - For algorithm guidance and coursework requirements
+- **Algorithm Instructors** - For algorithm guidance and project requirements
 - **shadcn/ui** - For beautiful, accessible UI components
 - **Drizzle Team** - For type-safe ORM
 - **Recharts** - For data visualization library
@@ -943,7 +947,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 ---
 
-## 📊 Project Statistics
+## Project Statistics
 
 - **Total Lines of Code:** ~8,500
 - **Files:** 65+
@@ -955,38 +959,37 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 ---
 
-## 🎓 Academic Information
+## Academic Information
 
-**Course:** Programming, Data Structures & Algorithms (PDSA)  
-**Institution:** [Your University]  
-**Semester:** Fall 2025  
-**Project Type:** Coursework Demonstration  
-**Grade:** [Pending]
+**Project:** Programming Data Structures & Algorithms Implementation
+**Focus Area:** Data structures and algorithmic problem solving
+**Key Concepts:** Heap/Priority Queue, Sorting, Graph algorithms
+**Technology Stack:** TypeScript, React, PostgreSQL, Node.js
 
 ### Learning Outcomes Demonstrated
 
-✅ Implementation of complex data structures (Heap/Priority Queue)  
-✅ Algorithm design and complexity analysis  
-✅ Full-stack application development  
-✅ Database design and optimization  
-✅ RESTful API design  
-✅ Type-safe programming with TypeScript  
-✅ Modern web development best practices  
-✅ Documentation and code quality
+- Implementation of complex data structures (Heap/Priority Queue)
+- Algorithm design and complexity analysis
+- Full-stack application development
+- Database design and optimization
+- RESTful API design
+- Type-safe programming with TypeScript
+- Modern web development best practices
+- Documentation and code quality
 
 ---
 
-## 📧 Support
+## Support
 
 For questions, issues, or suggestions:
 
-- 📫 Email: your.email@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/taskflowpro/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/taskflowpro/discussions)
+- Email: your.email@example.com
+- Issues: [GitHub Issues](https://github.com/yourusername/taskflowpro/issues)
+- Discussions: [GitHub Discussions](https://github.com/yourusername/taskflowpro/discussions)
 
 ---
 
-## 🌟 Star History
+## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=yourusername/taskflowpro&type=Date)](https://star-history.com/#yourusername/taskflowpro&Date)
 
@@ -994,10 +997,8 @@ For questions, issues, or suggestions:
 
 <div align="center">
 
-**Built with ❤️ for PDSA Coursework**
+**Built with dedication for Programming Data Structures & Algorithms**
 
 Made with [React](https://reactjs.org/) • [TypeScript](https://www.typescriptlang.org/) • [PostgreSQL](https://www.postgresql.org/)
-
-⭐ **Star this repo if you found it helpful!** ⭐
 
 </div>
