@@ -931,9 +931,9 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
 **Your Name** - _Initial work & Algorithm Implementation_
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Name](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+- GitHub: [@yourusername](https://github.com/Deneth-Kavishka)
+- LinkedIn: [Your Name](https://www.linkedin.com/in/deneth-kavishka-338288284/)
+- Email: denethkavishkaedu1@gmail.com
 
 ---
 
